@@ -6,6 +6,8 @@ from .forms import AccountForm
 from django.contrib import messages
 from .models import Accounts
 import json
+from .ml.predictor import predict_academic_risk
+
 
 # Create your views here.
 def register_view(request):
@@ -241,8 +243,33 @@ def dashboard_view(request):
                 ]
             }
 
+
+            gpa = cleaned_data["gpa_cgpa"]
+            level = basic_form.cleaned_data.get("level")
+            total_courses = len(cleaned_data["past_courses"]) + len(cleaned_data["current_courses"])
+            cgpa_trend = cleaned_data["cgpa_trend"]
+
+
+
+
             # Call the analysis function
             result_dict, status_code = analyse_student(cleaned_data)
+
+
+            # ML prediction 
+            try:
+                ml_risk = predict_academic_risk(
+                    gpa,
+                    level,
+                    total_courses,
+                    cgpa_trend
+                )
+
+                result_dict['ml_risk_level'] = ml_risk
+
+            except Exception:
+                ml_risk = "Unavailable"
+
 
             if status_code == 200:
                 return render(request, 'uniguide_dashboard.html', {
@@ -275,3 +302,7 @@ def dashboard_view(request):
         'show_result': False,
         'matric_number': request.session.get('matric_number')
     })
+
+
+
+    
