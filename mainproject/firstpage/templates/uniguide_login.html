@@ -1,29 +1,51 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login</title>
+
     <link rel="stylesheet" href="{% static 'css/register.css' %}">
 </head>
+
 <body>
-    <div class="whole-div">
-        <div class="picture-div">
-            <img src="{% static 'images/main-logo.png' %}" alt="University Logo" class="logo">
-        </div>
-        <div class="main-div">
-            <h2>Student Login</h2>
-            {% if error %}
+
+    <div class="main-page">
+        <div class="whole-div">
+            <div class="picture-div">
+                <img src="{% static 'images/uniguide.png' %}" alt="University Logo" class="logo">
+            </div>
+            <div class="main-div">
+
+                <h2>Student Login</h2>
+
+                {% if error %}
                 <p class="error-text">{{ error }}</p>
-            {% endif %}
-            <form method="POST">
-                {% csrf_token %}
-                <input type="text" name="matric_number" placeholder="Matric Number" required>
-                <input type="submit" value="LOGIN">
-            </form>
-            <p>Don't have an account? <a href="{% url 'uniguide:register' %}">Register</a></p>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mat-box">
+                        <input type="text" name="matric_number" placeholder="Matric Number" required>
+                    </div>
+
+                    <input type="submit" value="LOGIN">
+                </form>
+
+                <div class="dont-page">
+                    <p>
+                        Don't have an account?
+                        <a href="{% url 'uniguide:register' %}">Register</a>
+                    </p>
+                </div>
+
+            </div>
         </div>
     </div>
+
 </body>
+
 </html>
