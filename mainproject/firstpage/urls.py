@@ -1,11 +1,17 @@
 from django.urls import path
-from . import views
+from .views import (
+                    login_view,
+                    logout_view,
+                    register_view,
+                    dashboard_view
+)
 
-app_name = "firstpage"
+app_name = 'uniguide'
 
-urlpatterns = [
-    path("", views.login_view, name="login"),
-    path("register/", views.register_view, name="register"),
-    path("dashboard/", views.dashboard_view, name="dashboard"),
-    path("logout/", views.logout_view, name="logout"),
+urlpatterns =[
+    path('', login_view, name='home'),
+    path('login/', login_view,name = 'login'),
+    path('register/', register_view,name = 'register'),
+    path('dashboard/', dashboard_view,name = 'dashboard'),
+    path('logout/', views.logout_view, name='logout'),
 ]
