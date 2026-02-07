@@ -1,28 +1,42 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Registration</title>
+    <!-- Link your CSS file -->
     <link rel="stylesheet" href="{% static 'css/register.css' %}">
 </head>
+
 <body>
     <div class="whole-div">
         <div class="picture-div">
-            <img src="{% static 'images/main-logo.png' %}" alt="University Logo" class="logo">
+            <img src="{% static 'images/uniguide.png' %}" alt="University Logo" class="logo">
         </div>
+
         <div class="main-div">
+            <!-- Logo goes here -->
+            <!--<img src="{% static 'images/uniguide.png' %}" alt="University Logo" class="logo">-->
+
             <h2>Student Registration</h2>
-            <form method="POST">
+
+            <form action="" method="POST">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit" value="Register" />
             </form>
+
             <h4>Already have an account?
                 <a href="{% url 'uniguide:login' %}">Login</a>
             </h4>
         </div>
+
     </div>
+
 </body>
+
 </html>
+
