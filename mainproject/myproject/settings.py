@@ -38,7 +38,7 @@ MIDDLEWARE = [
 ]
 
 # Root URL config
-ROOT_URLCONF = 'myproject.urls'
+ROOT_URLCONF = 'mainproject.urls'
 
 # Templates
 TEMPLATES = [
@@ -57,7 +57,7 @@ TEMPLATES = [
 ]
 
 # WSGI
-WSGI_APPLICATION = 'myproject.wsgi.application'
+WSGI_APPLICATION = 'mainproject.wsgi.application'
 
 # Database (SQLite for Render, you can upgrade later)
 DATABASES = {
