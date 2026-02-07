@@ -20,14 +20,16 @@ ALLOWED_HOSTS = [
 
 # Applications
 INSTALLED_APPS = [
-    'mainproject.firstpage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'mainproject.firstpage',  # ✅ YOUR APP
 ]
+
 
 # Middleware
 MIDDLEWARE = [
