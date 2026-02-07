@@ -12,7 +12,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-secret-key")  # replace fallback-secret-key if you want
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-ALLOWED_HOSTS = ["uniguide-yyal.onrender.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    "uniguide-colq.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 # Applications
 INSTALLED_APPS = [
