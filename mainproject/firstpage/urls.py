@@ -9,6 +9,7 @@ from .views import (
 app_name = 'uniguide'
 
 urlpatterns =[
+    path('', login_view, name='home'),
     path('login/', login_view,name = 'login'),
     path('register/', register_view,name = 'register'),
     path('dashboard/', dashboard_view,name = 'dashboard' )
