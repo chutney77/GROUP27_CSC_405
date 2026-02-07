@@ -1,4 +1,4 @@
-Django>=5.2,<6.0
+Django<6.0,>=5.2
 gunicorn
 whitenoise
 numpy
@@ -6,3 +6,4 @@ pandas
 scipy
 scikit-learn==1.6.1
 joblib
+threadpoolctl>=3.1.0
