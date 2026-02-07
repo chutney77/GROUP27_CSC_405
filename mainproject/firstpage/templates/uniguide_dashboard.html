@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniGuide - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f4f6f8;
+            /* padding: 30px 15px; */
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .card {
+            max-width: 900px;
+            margin: 0 auto 30px auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        h2 {
+            color: #0d6efd;
+            font-weight: 600;
+        }
+
+        .table th {
+            background-color: #cfe2ff;
+            color: #0d6efd;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .show-more-btn {
+            display: block;
+            margin: 10px auto 20px auto;
+            color: #0d6efd;
+            font-weight: 500;
+        }
+
+        .show-more-btn:hover {
+            text-decoration: none;
+            color: #084298;
+        }
+
+        .alert {
+            border-radius: 8px;
+        }
+
+        .btn-lg {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2 class="text-center mb-5">UniGuide Academic Dashboard</h2>
+
+        {% if show_result %}
+        <!-- RESULT SECTION -->
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-center">
+                <h4 class="mb-0">Your Academic Recommendation</h4>
+            </div>
+            <div class="card-body">
+                <div
+                    class="alert alert-{% if result.risk_level == 'High' %}danger{% elif result.risk_level == 'Medium' %}warning{% else %}success{% endif %} mb-4">
+                    <h5 class="alert-heading">Risk Level: {{ result.risk_level }}</h5>
+                    <p class="mb-1">CGPA Trend: <strong>{{ result.cgpa_trend }}</strong></p>
+                </div>
+
+                {% if result.ml_risk_level %}
+                <div class="alert alert-info mb-4">
+                    <h5 class="alert-heading">ML Predicted Risk: {{ result.ml_risk_level }}</h5>
+                    {% if result.ml_confidence %}
+                    <p class="mb-1">ML Confidence: {{ result.ml_confidence }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% if result.cautions %}
+                <h5 class="text-danger mt-4">Cautions:</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    {% for caution in result.cautions %}
+                    <li class="list-group-item">{{ caution }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% if result.suggestions %}
+                <h5 class="text-success mt-4">Suggestions:</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    {% for suggestion in result.suggestions %}
+                    <li class="list-group-item">{{ suggestion }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                <p class="text-muted fst-italic mt-4">{{ result.explanation }}</p>
+            </div>
+            <div class="card-footer bg-light text-center">
+                <a href="{% url 'uniguide:dashboard' %}" class="btn btn-secondary btn-lg">Back to Form</a>
+                <a href="{% url 'uniguide:login' %}" class="btn btn-outline-danger btn-lg ms-3">Logout</a>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- FORM SECTION -->
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-center">
+                <h4 class="mb-0">Enter Your Academic Details</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <h5 class="mb-3">Basic Information</h5>
+                    {{ basic_form.as_p }}
+
+                    <!-- Past Courses -->
+                    <h5 class="mt-5 mb-3">Past Courses (at least 6 required)</h5>
+                    {{ past_formset.management_form }}
+                    <table class="table table-bordered table-hover" id="pastCoursesTable">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for form in past_formset %}
+                            <tr class="past-course-row">
+                                <td>{{ form.course }}{{ form.course.errors }}</td>
+                                <td>{{ form.grade }}{{ form.grade.errors }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="javascript:void(0);" class="show-more-btn" data-target="past-course-row">Show More</a>
+
+                    <!-- Current Courses -->
+                    <h5 class="mt-5 mb-3">Current Courses (at least 6 required)</h5>
+                    {{ current_formset.management_form }}
+                    <table class="table table-bordered table-hover" id="currentCoursesTable">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for form in current_formset %}
+                            <tr class="current-course-row">
+                                <td>{{ form.course }}{{ form.course.errors }}</td>
+                                <td>{{ form.status }}{{ form.status.errors }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="javascript:void(0);" class="show-more-btn" data-target="current-course-row">Show More</a>
+
+                    <!-- Submit & Logout -->
+                    <div class="d-flex justify-content-between mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg">Get Recommendation</button>
+                        <a href="{% url 'uniguide:login' %}" class="btn btn-outline-danger btn-lg">Logout</a>
+                    </div>
+
+                    {% if error_message %}
+                    <div class="alert alert-danger mt-4">
+                        {{ error_message }}
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <script>
+        document.querySelectorAll('.show-more-btn').forEach(btn => {
+            const rowClass = btn.getAttribute('data-target');
+            const rows = document.querySelectorAll(`.${rowClass}`);
+            let stage = 0; // 0 = 1 row, 1 = 6 rows, 2 = 9 rows
+
+            // Initially show first 1 row only
+            rows.forEach((row, index) => { if (index > 0) row.style.display = "none"; });
+
+            btn.addEventListener('click', () => {
+                stage++;
+                if (stage === 1) {
+                    rows.forEach((row, index) => { if (index > 0 && index < 6) row.style.display = ""; });
+                    btn.textContent = "Show More";
+                } else if (stage === 2) {
+                    rows.forEach((row, index) => { if (index >= 6 && index < 9) row.style.display = ""; });
+                    btn.textContent = "Show Less";
+                } else {
+                    rows.forEach((row, index) => { if (index > 0) row.style.display = "none"; });
+                    stage = 0;
+                    btn.textContent = "Show More";
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
