@@ -18,6 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('firstpage.urls')),  # root points to your firstpage app
+    path('', include('mainproject.firstpage.urls')),  # root points to your firstpage app
     path('admin/', admin.site.urls),
 ]
