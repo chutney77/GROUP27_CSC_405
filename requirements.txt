@@ -1,8 +1,8 @@
-Django>=4.2
-gunicorn
-whitenoise
+scikit-learn==1.6.1
 joblib
 numpy
 pandas
-scikit-learn==1.6.1
-
+scipy
+django>=5.2,<6.0
+gunicorn
+whitenoise
