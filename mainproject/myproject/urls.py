@@ -19,7 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('firstpage.urls')),  # root points to your app
+    path('', include('mainproject.firstpage.urls')),  # root points to your app
 ]
 
 firstpage/views.py
