@@ -5,6 +5,7 @@ from django.urls import reverse
 from .forms import AccountForm, StudentBasicForm, PastCourseFormSet, CurrentCourseFormSet
 from .models import Accounts
 from .ml.predictor import predict_academic_risk
+from .ml.analyzer import analyse_student  # 👈 Import the analysis logic
 
 
 # ──────────────────────────────
@@ -15,7 +16,7 @@ def register_view(request):
     if form.is_valid():
         form.save()
         messages.success(request, "Registration successful! You can now log in.")
-        return redirect('uniguide:login')  # ✅ FIXED
+        return redirect('uniguide:login')
     context = {'form': form}
     return render(request, "uniguide_register.html", context)
 
@@ -31,7 +32,7 @@ def login_view(request):
             student = Accounts.objects.get(matric_number=matric)
             request.session["student_id"] = student.id
             request.session["matric_number"] = student.matric_number
-            return redirect('uniguide:dashboard')  # ✅ FIXED
+            return redirect('uniguide:dashboard')
         except Accounts.DoesNotExist:
             error = "Matric number not registered"
     return render(request, "uniguide_login.html", {"error": error})
@@ -43,7 +44,7 @@ def login_view(request):
 def logout_view(request):
     if request.method == "POST":
         logout(request)
-        return redirect('uniguide:login')  # ✅ FIXED
+        return redirect('uniguide:login')
     return render(request, 'firstpage_logout.html')
 
 
@@ -52,7 +53,7 @@ def logout_view(request):
 # ──────────────────────────────
 def dashboard_view(request):
     if 'student_id' not in request.session:
-        return redirect(reverse('uniguide:login'))  # ✅ FIXED
+        return redirect(reverse('uniguide:login'))
 
     if request.method == 'POST':
         basic_form = StudentBasicForm(request.POST)
@@ -76,28 +77,57 @@ def dashboard_view(request):
                 ]
             }
 
-            # ML prediction
+            # ═══════════════════════════════════════════════════════
+            # PRIMARY ANALYSIS: Logic-based recommendation system
+            # ═══════════════════════════════════════════════════════
+            result_dict, status_code = analyse_student(cleaned_data)
+
+            # ═══════════════════════════════════════════════════════
+            # SECONDARY SUPPORT: ML prediction (adds extra insight)
+            # ═══════════════════════════════════════════════════════
             try:
-                ml_risk = predict_academic_risk(
+                ml_result = predict_academic_risk(
                     cleaned_data["gpa_cgpa"],
                     basic_form.cleaned_data.get("level"),
                     len(cleaned_data["past_courses"]) + len(cleaned_data["current_courses"]),
                     cleaned_data["cgpa_trend"]
                 )
-                result_dict = {'ml_risk_level': ml_risk}
-            except Exception:
-                result_dict = {'ml_risk_level': "Unavailable"}
+                # ML returns a dict like {'mlRiskLevel': 'Low', 'mlConfidence': 0.85}
+                if isinstance(ml_result, dict):
+                    result_dict['ml_risk_level'] = ml_result.get('mlRiskLevel', 'Unknown')
+                    result_dict['ml_confidence'] = ml_result.get('mlConfidence', 0)
+                else:
+                    result_dict['ml_risk_level'] = str(ml_result)
+                    result_dict['ml_confidence'] = None
+            except Exception as e:
+                result_dict['ml_risk_level'] = "Unavailable"
+                result_dict['ml_confidence'] = None
+                print(f"ML Prediction Error: {e}")  # For debugging
 
-            return render(request, 'uniguide_dashboard.html', {
-                'basic_form': basic_form,
-                'past_formset': past_formset,
-                'current_formset': current_formset,
-                'result': result_dict,
-                'show_result': True,
-                'matric_number': request.session.get('matric_number')
-            })
+            # ═══════════════════════════════════════════════════════
+            # RENDER RESULTS
+            # ═══════════════════════════════════════════════════════
+            if status_code == 200:
+                return render(request, 'uniguide_dashboard.html', {
+                    'basic_form': basic_form,
+                    'past_formset': past_formset,
+                    'current_formset': current_formset,
+                    'result': result_dict,
+                    'show_result': True,
+                    'matric_number': request.session.get('matric_number')
+                })
+            else:
+                # Analysis failed
+                return render(request, 'uniguide_dashboard.html', {
+                    'basic_form': basic_form,
+                    'past_formset': past_formset,
+                    'current_formset': current_formset,
+                    'error_message': result_dict.get('error', 'Analysis failed'),
+                    'show_result': False
+                })
 
     else:
+        # GET request - show empty form
         basic_form = StudentBasicForm()
         past_formset = PastCourseFormSet(prefix='past')
         current_formset = CurrentCourseFormSet(prefix='current')
@@ -108,4 +138,3 @@ def dashboard_view(request):
         'current_formset': current_formset,
         'show_result': False
     })
-
