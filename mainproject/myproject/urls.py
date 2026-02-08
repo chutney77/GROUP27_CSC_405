@@ -22,7 +22,6 @@ urlpatterns = [
     path('', include('mainproject.firstpage.urls')),  # root points to your app
 ]
 
-firstpage/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
