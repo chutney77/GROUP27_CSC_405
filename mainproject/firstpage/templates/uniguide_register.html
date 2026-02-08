@@ -1,42 +1,66 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Registration</title>
-    <!-- Link your CSS file -->
     <link rel="stylesheet" href="{% static 'css/register.css' %}">
 </head>
-
 <body>
     <div class="whole-div">
         <div class="picture-div">
             <img src="{% static 'images/uniguide.png' %}" alt="University Logo" class="logo">
         </div>
-
         <div class="main-div">
-            <!-- Logo goes here -->
-            <!--<img src="{% static 'images/uniguide.png' %}" alt="University Logo" class="logo">-->
-
             <h2>Student Registration</h2>
+            
+            {% if messages %}
+                {% for message in messages %}
+                <p class="success-text">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
 
-            <form action="" method="POST">
+            <form method="POST">
                 {% csrf_token %}
-                {{ form.as_p }}
+                
+                <div class="mat-box">
+                    {{ form.fullname }}
+                    {% if form.fullname.errors %}
+                    <p class="error-text">{{ form.fullname.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="mat-box">
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <p class="error-text">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="mat-box">
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                    <p class="error-text">{{ form.phone.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="mat-box">
+                    {{ form.matric_number }}
+                    {% if form.matric_number.errors %}
+                    <p class="error-text">{{ form.matric_number.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
                 <input type="submit" value="Register" />
             </form>
 
-            <h4>Already have an account?
-                <a href="{% url 'uniguide:login' %}">Login</a>
-            </h4>
+            <div class="auth-link">
+                <p>Already have an account?
+                    <a href="{% url 'uniguide:login' %}">Login</a>
+                </p>
+            </div>
         </div>
-
     </div>
-
 </body>
-
 </html>
-
