@@ -3,7 +3,6 @@
     margin: 0;
     padding: 0;
 }
-
 body {
     min-height: 100vh;
     font-family: Arial, Helvetica, sans-serif;
@@ -13,12 +12,29 @@ body {
     justify-content: center;
     padding: 20px;
 }
-
 /* Shared wrapper (used in register) */
 .whole-div {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
+    max-width: 500px;
+}
+
+/* Picture/Logo Section */
+.picture-div {
+    background: #f8f9fa;
+    width: 100%;
+    padding: 30px;
+    text-align: center;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.logo {
+    max-width: 150px;
+    height: auto;
 }
 
 /* Page container */
@@ -28,26 +44,36 @@ body {
     border-radius: 12px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
-
 /* Card */
 .main-div {
     background: #ffffff;
-    width: 500px;
+    width: 100%;
+    max-width: 500px;
     padding: 40px 35px;
-    border-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
-
 /* Headings */
 h2 {
     text-align: center;
     margin-bottom: 25px;
     color: #1e3c72;
 }
-
 /* Error message */
 .error-text {
     color: red;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* Success message */
+.success-text {
+    color: #28a745;
+    background: #d4edda;
+    padding: 12px;
+    border-radius: 8px;
     text-align: center;
     margin-bottom: 15px;
     font-size: 14px;
@@ -57,7 +83,6 @@ h2 {
 .mat-box {
     margin-bottom: 20px;
 }
-
 /* Inputs for BOTH pages */
 form input[type="text"],
 form input[type="email"],
@@ -70,12 +95,10 @@ form input[type="password"] {
     outline: none;
     transition: all 0.3s ease;
 }
-
 form input:focus {
     border-color: #2a5298;
     box-shadow: 0 0 6px rgba(42, 82, 152, 0.3);
 }
-
 /* Submit button */
 form input[type="submit"] {
     width: 100%;
@@ -89,11 +112,9 @@ form input[type="submit"] {
     cursor: pointer;
     transition: background 0.3s ease;
 }
-
 form input[type="submit"]:hover {
     background: #1e3c72;
 }
-
 /* Bottom links */
 .auth-link,
 .dont-page {
@@ -101,25 +122,21 @@ form input[type="submit"]:hover {
     margin-top: 25px;
     font-size: 14px;
 }
-
 .auth-link a,
 .dont-page a {
     color: #2a5298;
     font-weight: bold;
     text-decoration: none;
 }
-
 .auth-link a:hover,
 .dont-page a:hover {
     text-decoration: underline;
 }
-
 /* Mobile */
 @media (max-width: 480px) {
     .main-div {
         padding: 30px 20px;
     }
-
     h2 {
         font-size: 22px;
     }
