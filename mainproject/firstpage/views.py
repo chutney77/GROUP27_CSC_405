@@ -15,7 +15,7 @@ def register_view(request):
     if form.is_valid():
         form.save()
         messages.success(request, "Registration successful! You can now log in.")
-        return redirect(reverse('uniguide:login'))  # ✅ FIXED
+        return redirect('uniguide:login')  # ✅ FIXED
     context = {'form': form}
     return render(request, "uniguide_register.html", context)
 
@@ -31,7 +31,7 @@ def login_view(request):
             student = Accounts.objects.get(matric_number=matric)
             request.session["student_id"] = student.id
             request.session["matric_number"] = student.matric_number
-            return redirect(reverse('uniguide:dashboard'))  # ✅ FIXED
+            return redirect('uniguide:dashboard')  # ✅ FIXED
         except Accounts.DoesNotExist:
             error = "Matric number not registered"
     return render(request, "uniguide_login.html", {"error": error})
@@ -43,7 +43,7 @@ def login_view(request):
 def logout_view(request):
     if request.method == "POST":
         logout(request)
-        return redirect(reverse('uniguide:login'))  # ✅ FIXED
+        return redirect('uniguide:login')  # ✅ FIXED
     return render(request, 'firstpage_logout.html')
 
 
